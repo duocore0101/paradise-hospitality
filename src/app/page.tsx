@@ -233,6 +233,14 @@ export default function ParadiseHospitalityPage() {
             <a href="#dining" onClick={() => setMobileMenuOpen(false)}>Dining</a>
             <a href="#contact" onClick={() => setMobileMenuOpen(false)}>Contact</a>
             <div className="mobile-dropdown-divider" />
+            <a
+              href="#booking"
+              onClick={() => setMobileMenuOpen(false)}
+              className="mobile-book-stay-link"
+            >
+              <BedDouble size={16} />
+              <span>Book Your Luxury Stay</span>
+            </a>
             <button
               onClick={() => {
                 setMobileMenuOpen(false);

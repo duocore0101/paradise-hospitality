@@ -1,5 +1,38 @@
 [
   {
+    "id": "chk-1792561436098",
+    "srNo": "052",
+    "hotelId": "treebo-jp-cottage",
+    "hotelName": "Treebo Jp Cottage",
+    "date": "2026-10-21",
+    "leadSource": "MakeMyTrip",
+    "name": "Vikram Malhotra",
+    "address": "24 Marine Drive, Nariman Point, Mumbai",
+    "mobile": "+91 98200 45678",
+    "checkInDate": "2026-10-21",
+    "checkInTime": "01:30 PM",
+    "checkOutDate": "2026-10-22",
+    "checkOutTime": "11:00 AM",
+    "adults": 2,
+    "children": 0,
+    "nightsStay": 1,
+    "vehicleNo": "MH-01-AB-9988",
+    "nationality": "Indian",
+    "email": "vikram.malhotra@luxury.com",
+    "idProofType": "Aadhaar Card",
+    "idProofNumber": "XXXX-XXXX-4589",
+    "idProofFile": "data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"400\" height=\"240\" viewBox=\"0 0 400 240\"><rect width=\"400\" height=\"240\" rx=\"12\" fill=\"%23f8fafc\" stroke=\"%23cbd5e1\" stroke-width=\"2\"/><rect y=\"0\" width=\"400\" height=\"30\" fill=\"%23059669\"/><text x=\"20\" y=\"20\" fill=\"white\" font-family=\"sans-serif\" font-size=\"12\" font-weight=\"bold\">GOVERNMENT OF INDIA • UNIQUE IDENTIFICATION</text><rect x=\"30\" y=\"55\" width=\"80\" height=\"100\" rx=\"6\" fill=\"%23e2e8f0\"/><circle cx=\"70\" cy=\"90\" r=\"22\" fill=\"%2394a3b8\"/><path d=\"M45 140 Q70 120 95 140\" fill=\"%2394a3b8\"/><text x=\"130\" y=\"75\" font-family=\"sans-serif\" font-size=\"14\" font-weight=\"bold\" fill=\"%230f172a\">VIKRAM MALHOTRA</text><text x=\"130\" y=\"98\" font-family=\"sans-serif\" font-size=\"11\" fill=\"%2364748b\">DOB: 18/06/1990 | Gender: M</text><text x=\"130\" y=\"120\" font-family=\"sans-serif\" font-size=\"11\" fill=\"%2364748b\">Aadhaar No: XXXX-XXXX-4589</text><rect x=\"130\" y=\"140\" width=\"180\" height=\"20\" rx=\"4\" fill=\"%23ecfdf5\"/><text x=\"140\" y=\"154\" font-family=\"sans-serif\" font-size=\"10\" font-weight=\"bold\" fill=\"%23059669\">VERIFIED CITIZEN RECORD</text></svg>",
+    "idProofFileName": "aadhaar_vikram_malhotra.svg",
+    "roomNo": "204",
+    "advanceAmount": "5000",
+    "receiptNo": "REC-052",
+    "checkoutAgreement": true,
+    "signature": "",
+    "signedAt": "",
+    "status": "Checked In",
+    "createdAt": "2026-10-21T05:43:56.098Z"
+  },
+  {
     "id": "chk-1792553830050",
     "srNo": "051",
     "hotelId": "rivanta-suites-banquets",
@@ -172,8 +205,13 @@
     "advanceAmount": 4500,
     "receiptNo": "REC-046",
     "checkoutAgreement": true,
-    "status": "Checked In",
-    "createdAt": "2026-10-20T03:26:49.307Z"
+    "status": "Checked Out",
+    "createdAt": "2026-10-20T03:26:49.307Z",
+    "paymentStatus": "Paid",
+    "paymentMethod": "UPI / QR Code",
+    "invoiceNumber": "PH-INV-046-3003",
+    "discountAmount": 0,
+    "taxRate": 12
   },
   {
     "id": "chk-045",
@@ -200,7 +238,12 @@
     "receiptNo": "REC-1089",
     "checkoutAgreement": true,
     "status": "Checked In",
-    "createdAt": "2026-10-19T23:22:56.346Z"
+    "createdAt": "2026-10-19T23:22:56.346Z",
+    "paymentStatus": "Paid",
+    "paymentMethod": "UPI / QR Code",
+    "invoiceNumber": "PH-INV-045-7702",
+    "discountAmount": 0,
+    "taxRate": 12
   },
   {
     "id": "chk-044",
@@ -226,7 +269,7 @@
     "advanceAmount": 12500,
     "receiptNo": "REC-1090",
     "checkoutAgreement": true,
-    "status": "Checked In",
+    "status": "Checked Out",
     "createdAt": "2026-10-19T21:10:00.000Z"
   }
 ]

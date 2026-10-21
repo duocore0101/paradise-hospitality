@@ -100,6 +100,16 @@ export default function ParadiseHospitalityPage() {
       accent: 'linear-gradient(135deg, #1e1b4b 0%, #312e81 100%)',
     },
     {
+      id: 'cliffside',
+      title: 'Royal Cliffside Villa',
+      price: '₹14,200',
+      period: 'per night',
+      badge: 'Ultra Exclusive',
+      tagline: 'Private clifftop panorama with heated plunge pool & sundeck',
+      amenities: ['Private Plunge Pool', 'Helipad Access', 'Dedicated Chef', 'Sunset Terrace'],
+      accent: 'linear-gradient(135deg, #3b0764 0%, #581c87 100%)',
+    },
+    {
       id: 'garden',
       title: 'Deluxe Garden Sanctuary',
       price: '₹4,800',
@@ -118,6 +128,16 @@ export default function ParadiseHospitalityPage() {
       tagline: 'Classic architectural opulence paired with ultra-modern luxury',
       amenities: ['Handcrafted Teak Décor', 'Deep Soak Tub', 'Evening High Tea', 'Valet Service'],
       accent: 'linear-gradient(135deg, #78350f 0%, #92400e 100%)',
+    },
+    {
+      id: 'lagoon',
+      title: 'Azure Lagoon Pavilion',
+      price: '₹9,800',
+      period: 'per night',
+      badge: 'Scenic Haven',
+      tagline: 'Suspended above tranquil waters with glass floor viewing & jacuzzi',
+      amenities: ['Overwater Deck', 'Glass Flooring', 'Marine Lagoon View', 'Spa Hydrotherapy'],
+      accent: 'linear-gradient(135deg, #0f766e 0%, #0e7490 100%)',
     },
   ];
 
@@ -347,8 +367,10 @@ export default function ParadiseHospitalityPage() {
               >
                 <option value="Presidential Ocean Suite">Presidential Ocean Suite</option>
                 <option value="Royal Executive Penthouse">Royal Executive Penthouse</option>
+                <option value="Royal Cliffside Villa">Royal Cliffside Villa</option>
                 <option value="Deluxe Garden Sanctuary">Deluxe Garden Sanctuary</option>
                 <option value="Grand Heritage Suite">Grand Heritage Suite</option>
+                <option value="Azure Lagoon Pavilion">Azure Lagoon Pavilion</option>
               </select>
             </div>
 

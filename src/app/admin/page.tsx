@@ -546,6 +546,26 @@ function AdminDashboardContent() {
                 <strong className="portfolio-kpi-value">₹{portfolioTotals.totalAdvance.toLocaleString('en-IN')}</strong>
               </div>
             </div>
+
+            <div className="portfolio-kpi-card">
+              <div className="portfolio-kpi-icon" style={{ background: '#e0e7ff', color: '#4338ca' }}>
+                <TrendingUp size={22} />
+              </div>
+              <div>
+                <span className="portfolio-kpi-label">Group Occupancy Yield</span>
+                <strong className="portfolio-kpi-value">{portfolioTotals.avgOccupancy}% Occupied</strong>
+              </div>
+            </div>
+
+            <div className="portfolio-kpi-card">
+              <div className="portfolio-kpi-icon" style={{ background: '#fef2f2', color: '#dc2626' }}>
+                <CalendarCheck size={22} />
+              </div>
+              <div>
+                <span className="portfolio-kpi-label">Group Departures Today</span>
+                <strong className="portfolio-kpi-value">{portfolioStats.reduce((sum, s) => sum + s.hotelGuests.filter(g => g.status === 'Checked In' && g.checkOutDate === todayStr).length, 0)} Check-Outs</strong>
+              </div>
+            </div>
           </section>
 
           {/* Section Heading & Filter Bar */}
@@ -854,6 +874,45 @@ function AdminDashboardContent() {
               <div className="kpi-footer">
                 <span className="kpi-subtext">
                   Standard checkout: <strong>11:00 AM</strong>
+                </span>
+              </div>
+            </div>
+
+            {/* Card 5: Available Vacant Rooms */}
+            <div className="kpi-card card-emerald">
+              <div className="kpi-card-header">
+                <div className="kpi-icon-pill icon-emerald">
+                  <BedDouble size={22} />
+                </div>
+                <span className="kpi-tag tag-emerald">Ready for Check-In</span>
+              </div>
+              <div className="kpi-data">
+                <span className="kpi-value">{hotelTotalAvailableRooms}</span>
+                <span className="kpi-label">Rooms Available</span>
+              </div>
+              <div className="kpi-footer">
+                <span className="kpi-subtext">
+                  <span className="pulse-indicator available" style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', marginRight: 6 }} />
+                  Sanitized &amp; vacant keys
+                </span>
+              </div>
+            </div>
+
+            {/* Card 6: Live In-House Guests Census */}
+            <div className="kpi-card card-blue">
+              <div className="kpi-card-header">
+                <div className="kpi-icon-pill icon-blue">
+                  <UserCheck size={22} />
+                </div>
+                <span className="kpi-tag tag-blue">Live Census</span>
+              </div>
+              <div className="kpi-data">
+                <span className="kpi-value">{hotelActiveCheckedIn}</span>
+                <span className="kpi-label">In-House Guests</span>
+              </div>
+              <div className="kpi-footer">
+                <span className="kpi-subtext">
+                  Currently residing in suites
                 </span>
               </div>
             </div>
@@ -1422,6 +1481,54 @@ function AdminDashboardContent() {
                     <div className="stat-detail-row">
                       <span>Standard Check-in:</span>
                       <strong>12:00 PM</strong>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Metric 5: RevPAR & ADR Performance */}
+                <div className="analytics-stat-card stat-card-occupancy">
+                  <div className="stat-card-header">
+                    <div className="stat-icon-badge stat-icon-blue">
+                      <BarChart3 size={22} />
+                    </div>
+                    <span className="stat-tag-pill tag-blue">Yield Index</span>
+                  </div>
+                  <div className="stat-main-metric">
+                    <span className="stat-metric-number">₹{analyticsMetrics.revPar.toLocaleString('en-IN')}</span>
+                    <span className="stat-metric-caption">RevPAR Performance</span>
+                  </div>
+                  <div className="stat-card-footer">
+                    <div className="stat-detail-row">
+                      <span>ADR (Realized):</span>
+                      <strong>₹{analyticsMetrics.adr.toLocaleString('en-IN')}</strong>
+                    </div>
+                    <div className="stat-detail-row">
+                      <span>RevPAR Target:</span>
+                      <strong className="text-emerald">+12.4% vs benchmark</strong>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Metric 6: Guest Satisfaction & Service Rating */}
+                <div className="analytics-stat-card stat-card-revenue">
+                  <div className="stat-card-header">
+                    <div className="stat-icon-badge stat-icon-emerald">
+                      <Star size={22} fill="#fbbf24" strokeWidth={0} />
+                    </div>
+                    <span className="stat-tag-pill tag-emerald">5-Star Quality</span>
+                  </div>
+                  <div className="stat-main-metric">
+                    <span className="stat-metric-number">4.95 ★</span>
+                    <span className="stat-metric-caption">Guest Experience Score</span>
+                  </div>
+                  <div className="stat-card-footer">
+                    <div className="stat-detail-row">
+                      <span>Verified Reviews:</span>
+                      <strong>{selectedHotel.reviewsCount} Ratings</strong>
+                    </div>
+                    <div className="stat-detail-row">
+                      <span>Net Promoter Score:</span>
+                      <strong className="text-emerald">98.2% Positive</strong>
                     </div>
                   </div>
                 </div>

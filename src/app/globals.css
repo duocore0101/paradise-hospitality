@@ -1450,11 +1450,12 @@ tr:hover td {
   color: #ffffff;
 }
 
-/* KPI Cards Grid */
+/* KPI Cards Grid - STRICTLY 3 CARDS IN A SINGLE ROW */
 .kpi-cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 1.25rem;
+  width: 100%;
 }
 
 .kpi-card {
@@ -1764,8 +1765,9 @@ tr:hover td {
 
 .rooms-matrix-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 1.25rem;
+  width: 100%;
 }
 
 .room-matrix-card {
@@ -3205,11 +3207,12 @@ tr:hover td {
   line-height: 1.6;
 }
 
-/* SUITES GRID */
+/* SUITES GRID - STRICTLY 3 CARDS IN A SINGLE ROW */
 .suites-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
-  gap: 1.75rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  width: 100%;
 }
 
 .suite-card {
@@ -3348,11 +3351,12 @@ tr:hover td {
   border-color: #1e3a8a;
 }
 
-/* AMENITIES GRID */
+/* AMENITIES GRID - STRICTLY 3 CARDS IN A SINGLE ROW */
 .amenities-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
+  width: 100%;
 }
 
 .amenity-card {
@@ -6056,11 +6060,12 @@ tr:hover td {
   color: #0f172a;
 }
 
-/* In-House Guests Grid */
+/* In-House Guests Grid - STRICTLY 3 CARDS IN A SINGLE ROW */
 .inhouse-cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 1.35rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+  width: 100%;
 }
 
 .inhouse-guest-card {
@@ -7972,11 +7977,13 @@ tr:hover td {
   flex-wrap: wrap;
 }
 
+/* PORTFOLIO OVERVIEW KPIS - STRICTLY 3 CARDS IN A SINGLE ROW */
 .portfolio-overview-kpis {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
   margin-bottom: 1.75rem;
+  width: 100%;
 }
 
 .portfolio-kpi-card {
@@ -8042,10 +8049,12 @@ tr:hover td {
   color: #64748b;
 }
 
+/* PORTFOLIO HOTELS GRID - STRICTLY 3 CARDS IN A SINGLE ROW */
 .portfolio-hotels-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
+  width: 100%;
 }
 
 .hotel-property-card {
@@ -8315,7 +8324,7 @@ tr:hover td {
   }
 
   .portfolio-hotels-grid {
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(3, 1fr) !important;
     gap: 1.25rem;
   }
 
@@ -8445,10 +8454,122 @@ tr:hover td {
     justify-content: center;
   }
 
+  /* SUITES & AMENITIES: STRICTLY 3 CARDS IN A SINGLE ROW ON MOBILE */
   .suites-grid,
   .amenities-grid {
-    grid-template-columns: 1fr !important;
-    gap: 1.25rem;
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 0.65rem !important;
+    width: 100% !important;
+  }
+
+  .suite-card {
+    border-radius: 12px !important;
+  }
+
+  .suite-card-top {
+    padding: 0.85rem 0.65rem !important;
+    gap: 0.35rem !important;
+  }
+
+  .suite-badge-pill {
+    font-size: 0.58rem !important;
+    padding: 0.15rem 0.4rem !important;
+  }
+
+  .suite-card-title {
+    font-size: 0.82rem !important;
+    line-height: 1.2 !important;
+  }
+
+  .suite-card-tagline {
+    font-size: 0.65rem !important;
+    line-height: 1.2 !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+  }
+
+  .suite-card-body {
+    padding: 0.75rem 0.6rem !important;
+    gap: 0.5rem !important;
+  }
+
+  .suite-price-num {
+    font-size: 0.92rem !important;
+  }
+
+  .suite-price-period {
+    font-size: 0.62rem !important;
+  }
+
+  .suite-rating {
+    font-size: 0.65rem !important;
+  }
+
+  .suite-amenities-list {
+    margin-bottom: 0.35rem !important;
+    gap: 0.25rem !important;
+  }
+
+  .suite-amenities-list li {
+    font-size: 0.65rem !important;
+    gap: 0.25rem !important;
+    line-height: 1.15 !important;
+  }
+
+  .amenity-check {
+    width: 12px !important;
+    height: 12px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .btn-suite-reserve {
+    padding: 0.45rem 0.35rem !important;
+    font-size: 0.7rem !important;
+    border-radius: 8px !important;
+  }
+
+  .btn-suite-reserve svg {
+    width: 12px !important;
+    height: 12px !important;
+  }
+
+  .amenity-card {
+    padding: 0.85rem 0.65rem !important;
+    border-radius: 12px !important;
+    text-align: center !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+
+  .amenity-icon-box {
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 10px !important;
+    margin-bottom: 0.4rem !important;
+  }
+
+  .amenity-icon-box svg {
+    width: 18px !important;
+    height: 18px !important;
+  }
+
+  .amenity-card h4 {
+    font-size: 0.78rem !important;
+    line-height: 1.2 !important;
+    margin-bottom: 0.25rem !important;
+  }
+
+  .amenity-card p {
+    font-size: 0.65rem !important;
+    line-height: 1.25 !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 3 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
   }
 
   .login-modal-card {
@@ -8549,19 +8670,38 @@ tr:hover td {
     gap: 0.5rem;
   }
 
+  /* IN-HOUSE GUESTS GRID - STRICTLY 3 CARDS IN A SINGLE ROW ON MOBILE */
   .inhouse-cards-grid {
-    grid-template-columns: 1fr !important;
-    gap: 1rem;
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 0.65rem !important;
+    width: 100% !important;
+  }
+
+  .inhouse-guest-card {
+    padding: 0.75rem 0.6rem !important;
+    border-radius: 12px !important;
+    gap: 0.5rem !important;
+  }
+
+  .inhouse-guest-name {
+    font-size: 0.8rem !important;
+    line-height: 1.2 !important;
   }
 
   .inhouse-details-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 0.65rem;
+    grid-template-columns: 1fr !important;
+    gap: 0.35rem !important;
   }
 
   .inhouse-card-actions-row {
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.35rem;
+  }
+
+  .inhouse-card-actions-row button {
+    padding: 0.35rem 0.3rem !important;
+    font-size: 0.68rem !important;
   }
 
   .btn-card-edit,
@@ -8667,9 +8807,39 @@ tr:hover td {
     font-size: 0.775rem !important;
   }
 
+  /* PORTFOLIO OVERVIEW KPIS - STRICTLY 3 CARDS IN A SINGLE ROW ON MOBILE */
   .portfolio-overview-kpis {
-    grid-template-columns: 1fr 1fr !important;
-    gap: 0.75rem;
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 0.65rem !important;
+    width: 100% !important;
+  }
+
+  .portfolio-kpi-card {
+    padding: 0.65rem 0.5rem !important;
+    border-radius: 10px !important;
+    gap: 0.5rem !important;
+  }
+
+  .portfolio-kpi-icon {
+    width: 30px !important;
+    height: 30px !important;
+    border-radius: 8px !important;
+  }
+
+  .portfolio-kpi-icon svg {
+    width: 15px !important;
+    height: 15px !important;
+  }
+
+  .portfolio-kpi-label {
+    font-size: 0.58rem !important;
+    line-height: 1.1 !important;
+  }
+
+  .portfolio-kpi-value {
+    font-size: 0.95rem !important;
+    line-height: 1.1 !important;
   }
 
   .portfolio-section-title-row {
@@ -8691,9 +8861,80 @@ tr:hover td {
     width: 100% !important;
   }
 
+  /* PORTFOLIO HOTELS GRID - STRICTLY 3 CARDS IN A SINGLE ROW ON MOBILE */
   .portfolio-hotels-grid {
-    grid-template-columns: 1fr !important;
-    gap: 1.15rem;
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 0.65rem !important;
+    width: 100% !important;
+  }
+
+  .hotel-property-card {
+    border-radius: 12px !important;
+  }
+
+  .hotel-card-header {
+    height: 64px !important;
+    padding: 0.5rem !important;
+  }
+
+  .hotel-card-category-pill {
+    font-size: 0.55rem !important;
+    padding: 0.15rem 0.35rem !important;
+  }
+
+  .hotel-card-rating-chip {
+    font-size: 0.62rem !important;
+    padding: 0.15rem 0.35rem !important;
+  }
+
+  .hotel-card-body {
+    padding: 0.65rem 0.5rem !important;
+    gap: 0.4rem !important;
+  }
+
+  .hotel-card-name {
+    font-size: 0.82rem !important;
+    line-height: 1.2 !important;
+  }
+
+  .hotel-card-location {
+    font-size: 0.62rem !important;
+    gap: 0.25rem !important;
+  }
+
+  .hotel-card-tagline {
+    font-size: 0.62rem !important;
+    line-height: 1.2 !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+  }
+
+  .hotel-card-metrics-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 0.25rem !important;
+    padding: 0.35rem !important;
+    border-radius: 8px !important;
+  }
+
+  .metric-cell span {
+    font-size: 0.55rem !important;
+  }
+
+  .metric-cell strong {
+    font-size: 0.72rem !important;
+  }
+
+  .hotel-occupancy-bar-wrap {
+    display: none !important;
+  }
+
+  .btn-launch-hotel {
+    padding: 0.4rem 0.35rem !important;
+    font-size: 0.68rem !important;
+    border-radius: 8px !important;
   }
 
   /* Admin Dashboard - Single Hotel View */
@@ -8756,9 +8997,52 @@ tr:hover td {
     box-sizing: border-box;
   }
 
+  /* KPI CARDS GRID - STRICTLY 3 CARDS IN A SINGLE ROW ON MOBILE */
   .kpi-cards-grid {
-    grid-template-columns: 1fr 1fr !important;
-    gap: 0.75rem;
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 0.65rem !important;
+    width: 100% !important;
+  }
+
+  .kpi-card {
+    padding: 0.75rem 0.6rem !important;
+    border-radius: 12px !important;
+    gap: 0.45rem !important;
+  }
+
+  .kpi-card-header {
+    gap: 0.3rem !important;
+    flex-wrap: wrap !important;
+  }
+
+  .kpi-icon-pill {
+    width: 30px !important;
+    height: 30px !important;
+  }
+
+  .kpi-icon-pill svg {
+    width: 15px !important;
+    height: 15px !important;
+  }
+
+  .kpi-tag {
+    font-size: 0.58rem !important;
+    padding: 0.15rem 0.35rem !important;
+  }
+
+  .kpi-value {
+    font-size: 1.05rem !important;
+    line-height: 1.1 !important;
+  }
+
+  .kpi-label {
+    font-size: 0.62rem !important;
+  }
+
+  .kpi-subtext {
+    font-size: 0.58rem !important;
+    line-height: 1.15 !important;
   }
 
   .dashboard-tabs-bar {
@@ -8780,9 +9064,10 @@ tr:hover td {
     font-size: 0.8rem;
   }
 
+  /* ROOMS MODERN GRID - STRICTLY 3 CARDS IN A SINGLE ROW ON MOBILE */
   .rooms-modern-grid {
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)) !important;
-    gap: 0.75rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 0.65rem !important;
   }
 
   .section-toolbar {
@@ -8882,10 +9167,57 @@ tr:hover td {
 
 /* EXTRA SMALL SMARTPHONES (<= 480px) */
 @media (max-width: 480px) {
-  .portfolio-overview-kpis,
-  .kpi-cards-grid,
   .billing-kpis-grid {
     grid-template-columns: 1fr !important;
+  }
+
+  /* ENSURE ALL CARDS APPEAR STRICTLY 3 CARDS IN A SINGLE ROW ACROSS MOBILE & EXTRA-SMALL */
+  .portfolio-overview-kpis,
+  .portfolio-hotels-grid,
+  .kpi-cards-grid,
+  .suites-grid,
+  .amenities-grid,
+  .rooms-modern-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 0.45rem !important;
+    width: 100% !important;
+  }
+
+  .portfolio-kpi-card,
+  .kpi-card {
+    padding: 0.5rem 0.35rem !important;
+    border-radius: 8px !important;
+  }
+
+  .portfolio-kpi-value,
+  .kpi-value {
+    font-size: 0.88rem !important;
+  }
+
+  .portfolio-kpi-label,
+  .kpi-label {
+    font-size: 0.52rem !important;
+  }
+
+  .suite-card-top,
+  .suite-card-body,
+  .amenity-card {
+    padding: 0.55rem 0.4rem !important;
+  }
+
+  .suite-card-title,
+  .amenity-card h4 {
+    font-size: 0.72rem !important;
+  }
+
+  .suite-price-num {
+    font-size: 0.8rem !important;
+  }
+
+  .btn-suite-reserve {
+    padding: 0.35rem 0.25rem !important;
+    font-size: 0.62rem !important;
   }
 
   .inhouse-details-grid,
@@ -8918,5 +9250,31 @@ tr:hover td {
   }
 }
 
+/* ========================================================================= */
+/* UNIVERSAL 3-CARDS-PER-ROW GUARANTEE ACROSS WEBSITE & DASHBOARD             */
+/* ========================================================================= */
+.suite-card,
+.amenity-card,
+.hotel-property-card,
+.room-luxury-card,
+.analytics-stat-card,
+.portfolio-kpi-card,
+.kpi-card,
+.inhouse-guest-card,
+.room-matrix-card {
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
 
-
+.suites-grid,
+.amenities-grid,
+.portfolio-hotels-grid,
+.rooms-luxury-grid,
+.analytics-hero-grid,
+.portfolio-overview-kpis,
+.kpi-cards-grid,
+.inhouse-cards-grid,
+.rooms-matrix-grid {
+  width: 100% !important;
+  box-sizing: border-box !important;
+}

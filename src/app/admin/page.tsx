@@ -98,13 +98,45 @@ function AdminDashboardContent() {
   const fetchCheckins = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/checkins');
+      const res = await fetch('/api/checkins', { cache: 'no-store' });
       const json = await res.json();
-      if (json.success && json.data) {
-        setCheckins(json.data);
+      if (json.success && Array.isArray(json.data)) {
+        let list: GuestRegistration[] = json.data;
+        try {
+          if (typeof window !== 'undefined') {
+            const cachedStr = localStorage.getItem('paradise_guest_checkins_backup');
+            if (cachedStr) {
+              const cachedList: GuestRegistration[] = JSON.parse(cachedStr);
+              if (Array.isArray(cachedList) && cachedList.length > 0) {
+                const serverIds = new Set(list.map((g) => g.id));
+                const localOnly = cachedList.filter((g) => !serverIds.has(g.id));
+                if (localOnly.length > 0) {
+                  list = [...localOnly, ...list];
+                }
+              }
+            }
+            localStorage.setItem('paradise_guest_checkins_backup', JSON.stringify(list));
+          }
+        } catch (e) {
+          // ignore
+        }
+        setCheckins(list);
       }
     } catch (err) {
       console.error('Failed to load checkins', err);
+      try {
+        if (typeof window !== 'undefined') {
+          const cachedStr = localStorage.getItem('paradise_guest_checkins_backup');
+          if (cachedStr) {
+            const cachedList = JSON.parse(cachedStr);
+            if (Array.isArray(cachedList) && cachedList.length > 0) {
+              setCheckins(cachedList);
+            }
+          }
+        }
+      } catch (e) {
+        // ignore
+      }
     } finally {
       setLoading(false);
     }

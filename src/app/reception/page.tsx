@@ -203,12 +203,34 @@ function ReceptionContent() {
   const fetchCheckinsList = async () => {
     setLoadingCheckins(true);
     try {
-      const res = await fetch('/api/checkins');
+      const res = await fetch('/api/checkins', { cache: 'no-store' });
       const json = await res.json();
-      if (json.success && json.data) {
-        setAllCheckins(json.data);
-        if (!selectedBillingGuestId && json.data.length > 0) {
-          const firstInHouse = json.data.find((g: GuestRegistration) => g.status === 'Checked In');
+      if (json.success && Array.isArray(json.data)) {
+        let list: GuestRegistration[] = json.data;
+
+        // Sync with browser localStorage backup to safeguard against fresh serverless cold-starts
+        try {
+          if (typeof window !== 'undefined') {
+            const cachedStr = localStorage.getItem('paradise_guest_checkins_backup');
+            if (cachedStr) {
+              const cachedList: GuestRegistration[] = JSON.parse(cachedStr);
+              if (Array.isArray(cachedList) && cachedList.length > 0) {
+                const serverIds = new Set(list.map((g) => g.id));
+                const localOnly = cachedList.filter((g) => !serverIds.has(g.id));
+                if (localOnly.length > 0) {
+                  list = [...localOnly, ...list];
+                }
+              }
+            }
+            localStorage.setItem('paradise_guest_checkins_backup', JSON.stringify(list));
+          }
+        } catch (e) {
+          // ignore localStorage errors
+        }
+
+        setAllCheckins(list);
+        if (!selectedBillingGuestId && list.length > 0) {
+          const firstInHouse = list.find((g: GuestRegistration) => g.status === 'Checked In');
           if (firstInHouse) setSelectedBillingGuestId(firstInHouse.id);
         }
         if (json.nextSrNo) {
@@ -220,7 +242,20 @@ function ReceptionContent() {
         }
       }
     } catch (err) {
-      // silent fallback
+      // Local fallback from browser storage if network glitch
+      try {
+        if (typeof window !== 'undefined') {
+          const cachedStr = localStorage.getItem('paradise_guest_checkins_backup');
+          if (cachedStr) {
+            const cachedList: GuestRegistration[] = JSON.parse(cachedStr);
+            if (Array.isArray(cachedList) && cachedList.length > 0) {
+              setAllCheckins(cachedList);
+            }
+          }
+        }
+      } catch (e) {
+        // ignore
+      }
     } finally {
       setLoadingCheckins(false);
     }
@@ -759,6 +794,24 @@ function ReceptionContent() {
       const result = await res.json();
 
       if (result.success) {
+        // Save to browser localStorage backup immediately
+        try {
+          if (typeof window !== 'undefined') {
+            const cachedStr = localStorage.getItem('paradise_guest_checkins_backup');
+            const cachedList: GuestRegistration[] = cachedStr ? JSON.parse(cachedStr) : [];
+            const newRec = result.record || {
+              ...formData,
+              id: 'chk-' + Date.now(),
+              status: 'Checked In',
+              createdAt: new Date().toISOString(),
+            };
+            const updated = [newRec, ...cachedList.filter((c) => c.id !== newRec.id)];
+            localStorage.setItem('paradise_guest_checkins_backup', JSON.stringify(updated));
+          }
+        } catch (e) {
+          // ignore localStorage error
+        }
+
         setSuccessData({
           name: formData.name,
           roomNo: formData.roomNo,

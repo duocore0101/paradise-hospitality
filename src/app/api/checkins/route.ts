@@ -2,15 +2,18 @@ import { NextResponse } from 'next/server';
 import { getCheckins, saveCheckin, updateCheckin } from '@/lib/storage';
 import { GuestRegistration } from '@/types/checkin';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET() {
   try {
     const checkins = getCheckins();
-    
+
     // Calculate next suggested serial number based on latest record
     let nextSrNo = '001';
-    if (checkins.length > 0) {
+    if (checkins && checkins.length > 0) {
       const numbers = checkins
-        .map((c) => parseInt(c.srNo.replace(/\D/g, ''), 10))
+        .map((c) => parseInt(String(c.srNo || '').replace(/\D/g, ''), 10))
         .filter((n) => !isNaN(n));
       if (numbers.length > 0) {
         const maxNum = Math.max(...numbers);
@@ -18,14 +21,22 @@ export async function GET() {
       }
     }
 
-    return NextResponse.json({
-      success: true,
-      data: checkins,
-      nextSrNo,
-    });
-  } catch (error) {
     return NextResponse.json(
-      { success: false, message: 'Failed to fetch check-ins' },
+      {
+        success: true,
+        data: checkins,
+        nextSrNo,
+      },
+      {
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        },
+      }
+    );
+  } catch (error: any) {
+    console.error('[GET /api/checkins error]:', error);
+    return NextResponse.json(
+      { success: false, message: error?.message || 'Failed to fetch check-ins' },
       { status: 500 }
     );
   }
@@ -33,9 +44,18 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
+    let body: any;
+    try {
+      body = await request.json();
+    } catch (parseError: any) {
+      console.error('[POST /api/checkins JSON parse error]:', parseError);
+      return NextResponse.json(
+        { success: false, message: 'Invalid JSON request format.' },
+        { status: 400 }
+      );
+    }
 
-    if (!body.name || !body.mobile || !body.roomNo) {
+    if (!body || !body.name || !body.mobile || !body.roomNo) {
       return NextResponse.json(
         { success: false, message: 'Name, Mobile, and Room Number are required.' },
         { status: 400 }
@@ -43,22 +63,22 @@ export async function POST(request: Request) {
     }
 
     const newRecord: GuestRegistration = {
-      id: 'chk-' + Date.now(),
+      id: body.id || 'chk-' + Date.now(),
       srNo: body.srNo || '001',
       hotelId: body.hotelId || 'treebo-jp-cottage',
       hotelName: body.hotelName || 'Treebo Jp Cottage',
       date: body.date || new Date().toISOString().split('T')[0],
       leadSource: body.leadSource || 'Walk-in Direct',
-      name: body.name.trim(),
+      name: String(body.name).trim(),
       address: body.address || '',
-      mobile: body.mobile.trim(),
+      mobile: String(body.mobile).trim(),
       checkInDate: body.checkInDate || new Date().toISOString().split('T')[0],
-      checkInTime: body.checkInTime || '',
+      checkInTime: body.checkInTime || '12:00 PM',
       checkOutDate: body.checkOutDate || '',
       checkOutTime: body.checkOutTime || '11:00 AM',
-      adults: body.adults || 1,
-      children: body.children || 0,
-      nightsStay: body.nightsStay || 1,
+      adults: body.adults !== undefined ? body.adults : 1,
+      children: body.children !== undefined ? body.children : 0,
+      nightsStay: body.nightsStay !== undefined ? body.nightsStay : 1,
       vehicleNo: body.vehicleNo || '',
       nationality: body.nationality || 'Indian',
       email: body.email || '',
@@ -66,10 +86,17 @@ export async function POST(request: Request) {
       idProofNumber: body.idProofNumber || '',
       idProofFile: body.idProofFile || '',
       idProofFileName: body.idProofFileName || '',
-      roomNo: body.roomNo.trim(),
-      advanceAmount: body.advanceAmount || 0,
+      roomNo: String(body.roomNo).trim(),
+      roomRate: body.roomRate ? Number(body.roomRate) : undefined,
+      advanceAmount: body.advanceAmount !== undefined ? body.advanceAmount : 0,
       receiptNo: body.receiptNo || '',
       checkoutAgreement: Boolean(body.checkoutAgreement),
+      billingItems: Array.isArray(body.billingItems) ? body.billingItems : [],
+      discountAmount: body.discountAmount !== undefined ? Number(body.discountAmount) : 0,
+      taxRate: body.taxRate !== undefined ? Number(body.taxRate) : 12,
+      paymentMethod: body.paymentMethod || 'UPI / QR Code',
+      paymentStatus: body.paymentStatus || 'Partially Paid',
+      invoiceNumber: body.invoiceNumber || `INV-${body.srNo || '001'}`,
       signature: body.signature || '',
       signedAt: body.signature ? new Date().toISOString() : '',
       status: 'Checked In',
@@ -84,9 +111,10 @@ export async function POST(request: Request) {
       record: newRecord,
       total: updatedList.length,
     });
-  } catch (error) {
+  } catch (error: any) {
+    console.error('[POST /api/checkins execution error]:', error);
     return NextResponse.json(
-      { success: false, message: 'Failed to process check-in.' },
+      { success: false, message: error?.message || 'Failed to process check-in.' },
       { status: 500 }
     );
   }
@@ -94,7 +122,16 @@ export async function POST(request: Request) {
 
 export async function PATCH(request: Request) {
   try {
-    const body = await request.json();
+    let body: any;
+    try {
+      body = await request.json();
+    } catch (parseError: any) {
+      return NextResponse.json(
+        { success: false, message: 'Invalid JSON request format.' },
+        { status: 400 }
+      );
+    }
+
     const { id, ...updates } = body;
 
     if (!id) {
@@ -111,11 +148,11 @@ export async function PATCH(request: Request) {
       message: 'Guest record updated successfully',
       data: updatedList,
     });
-  } catch (error) {
+  } catch (error: any) {
+    console.error('[PATCH /api/checkins execution error]:', error);
     return NextResponse.json(
-      { success: false, message: 'Failed to update guest record.' },
+      { success: false, message: error?.message || 'Failed to update guest record.' },
       { status: 500 }
     );
   }
 }
-

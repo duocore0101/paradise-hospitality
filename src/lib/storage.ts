@@ -1,72 +1,178 @@
 import fs from 'fs';
 import path from 'path';
+import os from 'os';
 import { GuestRegistration } from '@/types/checkin';
 
-const dataDir = path.join(process.cwd(), 'data');
-const filePath = path.join(dataDir, 'checkins.json');
+// Import seed checkins bundled directly into Next.js build
+import defaultSeedCheckins from '../../data/checkins.json';
 
-// Ensure directory exists
-function ensureDataFile() {
-  if (!fs.existsSync(dataDir)) {
-    fs.mkdirSync(dataDir, { recursive: true });
+// Declare global memory cache for warm serverless invocations
+declare global {
+  // eslint-disable-next-line no-var
+  var __HOTEL_CHECKINS_CACHE__: GuestRegistration[] | undefined;
+}
+
+// Local project path (used in local development)
+const localDataDir = path.join(process.cwd(), 'data');
+const localFilePath = path.join(localDataDir, 'checkins.json');
+
+// Writable /tmp path (guaranteed writable on Vercel / AWS Lambda / Serverless)
+const tmpFilePath = path.join(os.tmpdir(), 'hotel_checkins.json');
+
+/**
+ * Safely parse JSON string into GuestRegistration array
+ */
+function safeParse(content: string): GuestRegistration[] | null {
+  try {
+    const parsed = JSON.parse(content);
+    if (Array.isArray(parsed)) {
+      return parsed as GuestRegistration[];
+    }
+  } catch (err) {
+    console.warn('[Storage] Failed to parse JSON content:', err);
   }
-  if (!fs.existsSync(filePath)) {
-    // Initial sample guest to make client demo immediately interactive
-    const initialData: GuestRegistration[] = [
-      {
-        id: 'chk-045',
-        srNo: '045',
-        date: new Date().toISOString().split('T')[0],
-        name: 'Rahul Sharma',
-        address: '42 MG Road, Bangalore, Karnataka',
-        mobile: '+91 98765 43210',
-        checkInDate: new Date().toISOString().split('T')[0],
-        checkInTime: '12:30 PM',
-        checkOutDate: new Date(Date.now() + 86400000 * 2).toISOString().split('T')[0],
-        checkOutTime: '11:00 AM',
-        adults: 2,
-        children: 1,
-        nightsStay: 2,
-        vehicleNo: 'KA-01-AB-1234',
-        nationality: 'Indian',
-        email: 'rahul.sharma@example.com',
-        roomNo: '204',
-        advanceAmount: 3000,
-        receiptNo: 'REC-1089',
-        checkoutAgreement: true,
-        status: 'Checked In',
-        createdAt: new Date(Date.now() - 3600000 * 4).toISOString(),
-      }
-    ];
-    fs.writeFileSync(filePath, JSON.stringify(initialData, null, 2), 'utf-8');
+  return null;
+}
+
+/**
+ * Safely write data to /tmp file
+ */
+function tryWriteTmp(data: GuestRegistration[]) {
+  try {
+    const dir = path.dirname(tmpFilePath);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    fs.writeFileSync(tmpFilePath, JSON.stringify(data, null, 2), 'utf-8');
+  } catch (err) {
+    console.warn('[Storage] Could not write to /tmp:', err);
   }
 }
 
+/**
+ * Safely write data to local data folder (silently ignores EROFS in serverless environments)
+ */
+function tryWriteLocal(data: GuestRegistration[]) {
+  try {
+    if (!fs.existsSync(localDataDir)) {
+      fs.mkdirSync(localDataDir, { recursive: true });
+    }
+    fs.writeFileSync(localFilePath, JSON.stringify(data, null, 2), 'utf-8');
+  } catch (err: any) {
+    // EROFS (Read-only file system) is expected on Vercel/serverless environments.
+    // Suppress error so it does not fail the API call.
+    if (err?.code === 'EROFS' || err?.message?.includes('read-only')) {
+      return;
+    }
+    console.warn('[Storage] Could not write to local file path:', err);
+  }
+}
+
+/**
+ * Ensure local directory & seed file exist if writable
+ */
+function ensureDataFile() {
+  try {
+    if (!fs.existsSync(localDataDir)) {
+      fs.mkdirSync(localDataDir, { recursive: true });
+    }
+    if (!fs.existsSync(localFilePath)) {
+      const seed = (defaultSeedCheckins as unknown as GuestRegistration[]) || [];
+      fs.writeFileSync(localFilePath, JSON.stringify(seed, null, 2), 'utf-8');
+    }
+  } catch (err: any) {
+    // Ignore read-only errors on serverless
+    if (err?.code === 'EROFS' || err?.message?.includes('read-only')) {
+      return;
+    }
+  }
+}
+
+/**
+ * Reads checkins from the fastest and most reliable source:
+ * 1. Global in-memory cache
+ * 2. /tmp/hotel_checkins.json (writable disk)
+ * 3. Local project checkins.json
+ * 4. Bundled seed data
+ */
 export function getCheckins(): GuestRegistration[] {
+  // 1. Check in-memory cache
+  if (globalThis.__HOTEL_CHECKINS_CACHE__ && Array.isArray(globalThis.__HOTEL_CHECKINS_CACHE__)) {
+    return globalThis.__HOTEL_CHECKINS_CACHE__;
+  }
+
+  // 2. Check /tmp/hotel_checkins.json
+  try {
+    if (fs.existsSync(tmpFilePath)) {
+      const data = fs.readFileSync(tmpFilePath, 'utf-8');
+      const parsed = safeParse(data);
+      if (parsed && parsed.length > 0) {
+        globalThis.__HOTEL_CHECKINS_CACHE__ = parsed;
+        return parsed;
+      }
+    }
+  } catch (err) {
+    console.warn('[Storage] Error reading /tmp cache:', err);
+  }
+
+  // 3. Check local project file
   try {
     ensureDataFile();
-    const data = fs.readFileSync(filePath, 'utf-8');
-    return JSON.parse(data) as GuestRegistration[];
-  } catch (error) {
-    console.error('Error reading checkins:', error);
-    return [];
+    if (fs.existsSync(localFilePath)) {
+      const data = fs.readFileSync(localFilePath, 'utf-8');
+      const parsed = safeParse(data);
+      if (parsed && parsed.length > 0) {
+        globalThis.__HOTEL_CHECKINS_CACHE__ = parsed;
+        tryWriteTmp(parsed);
+        return parsed;
+      }
+    }
+  } catch (err) {
+    console.warn('[Storage] Error reading local file path:', err);
   }
+
+  // 4. Fallback to bundled seed data
+  const fallback = (defaultSeedCheckins as unknown as GuestRegistration[]) || [];
+  globalThis.__HOTEL_CHECKINS_CACHE__ = fallback;
+  tryWriteTmp(fallback);
+  return fallback;
 }
 
+/**
+ * Saves a new checkin record, prepending it to the list
+ */
 export function saveCheckin(registration: GuestRegistration): GuestRegistration[] {
-  ensureDataFile();
-  const list = getCheckins();
-  // Prepend so the newest check-in is at the top
-  const updated = [registration, ...list];
-  fs.writeFileSync(filePath, JSON.stringify(updated, null, 2), 'utf-8');
+  const current = getCheckins();
+  // Filter out any duplicate id
+  const updated = [registration, ...current.filter((item) => item.id !== registration.id)];
+
+  // Update in-memory cache immediately
+  globalThis.__HOTEL_CHECKINS_CACHE__ = updated;
+
+  // Persist to writable /tmp
+  tryWriteTmp(updated);
+
+  // Persist to local project if writable (localhost)
+  tryWriteLocal(updated);
+
   return updated;
 }
 
+/**
+ * Updates an existing checkin record
+ */
 export function updateCheckin(id: string, updates: Partial<GuestRegistration>): GuestRegistration[] {
-  ensureDataFile();
-  const list = getCheckins();
-  const updated = list.map((item) => (item.id === id ? { ...item, ...updates } : item));
-  fs.writeFileSync(filePath, JSON.stringify(updated, null, 2), 'utf-8');
+  const current = getCheckins();
+  const updated = current.map((item) => (item.id === id ? { ...item, ...updates } : item));
+
+  // Update in-memory cache immediately
+  globalThis.__HOTEL_CHECKINS_CACHE__ = updated;
+
+  // Persist to writable /tmp
+  tryWriteTmp(updated);
+
+  // Persist to local project if writable (localhost)
+  tryWriteLocal(updated);
+
   return updated;
 }
-
